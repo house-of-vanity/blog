@@ -8,24 +8,24 @@
 ## Steps
 - Script for setting up namespace and run qbittorent-nox into it. Change user in last line to desired on.
 
-```bash
-#!/bin/bash
-ip netns del torrent
-sleep 2
-ip netns add torrent
-ip link add veth0 type veth peer name veth1 
-ip link set veth1 netns torrent
-ip address add 10.99.99.1/24 dev veth0
-ip netns exec torrent ip address add 10.99.99.2/24 dev veth1
-ip link set dev veth0 up
-ip netns exec torrent ip link set dev veth1 up
-ip netns exec torrent ip route add default via 10.99.99.1
-mkdir -p /etc/netns/torrent
-echo nameserver 8.8.8.8 > /etc/netns/torrent/resolv.conf
-ip netns exec torrent wg-quick up torrent
-sleep 5
-ip netns exec torrent sudo -u ab qbittorrent-nox
-```
+	```bash
+	#!/bin/bash
+	ip netns del torrent
+	sleep 2
+	ip netns add torrent
+	ip link add veth0 type veth peer name veth1 
+	ip link set veth1 netns torrent
+	ip address add 10.99.99.1/24 dev veth0
+	ip netns exec torrent ip address add 10.99.99.2/24 dev veth1
+	ip link set dev veth0 up
+	ip netns exec torrent ip link set dev veth1 up
+	ip netns exec torrent ip route add default via 10.99.99.1
+	mkdir -p /etc/netns/torrent
+	echo nameserver 8.8.8.8 > /etc/netns/torrent/resolv.conf
+	ip netns exec torrent wg-quick up torrent
+	sleep 5
+	ip netns exec torrent sudo -u ab qbittorrent-nox
+	```
 
 - Systemd service unit
 
