@@ -27,46 +27,46 @@
 	```
 
 - Systemd service unit
+	```ini
+	# /etc/systemd/system/qbittorrent.service
+	[Unit]
+	Description=qBittorrent via vpn
+	After=network.target
+	StartLimitIntervalSec=0
 
-		# /etc/systemd/system/qbittorrent.service
-		[Unit]
-		Description=qBittorrent via vpn
-		After=network.target
-		StartLimitIntervalSec=0
+	[Service]
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=root
+	ExecStart=/usr/bin/torrent_ns
+	ExecStop=/usr/bin/ip netns del torrent
 
-		[Service]
-		Type=simple
-		Restart=always
-		RestartSec=1
-		User=root
-		ExecStart=/usr/bin/torrent_ns
-		ExecStop=/usr/bin/ip netns del torrent
-
-		[Install]
-		WantedBy=multi-user.target
-
+	[Install]
+	WantedBy=multi-user.target
+	```
 - NGINX proxy config example.
-
-		server {
-			listen 443 ssl http2;
-			server_name tr.hexor.ru;
-			include ssl.conf;
-			location / {
-				proxy_pass http://10.99.99.2:8080;
-				proxy_set_header Host $host;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-				proxy_set_header X-Forwarded-Proto $scheme;
-				proxy_hide_header   Referer;
-				proxy_hide_header   Origin;
-				proxy_set_header    Referer                 '';
-				proxy_set_header    Origin                  '';
-			}
+	```nginx
+	server {
+		listen 443 ssl http2;
+		server_name tr.hexor.ru;
+		include ssl.conf;
+		location / {
+			proxy_pass http://10.99.99.2:8080;
+			proxy_set_header Host $host;
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header X-Forwarded-Proto $scheme;
+			proxy_hide_header   Referer;
+			proxy_hide_header   Origin;
+			proxy_set_header    Referer                 '';
+			proxy_set_header    Origin                  '';
 		}
-		server {
-			listen 80;
-			server_name tr.hexor.ru;
-			listen [::]:80;
-			return 302 https://$host$request_uri;
-		}
-
+	}
+	server {
+		listen 80;
+		server_name tr.hexor.ru;
+		listen [::]:80;
+		return 302 https://$host$request_uri;
+	}
+	```
