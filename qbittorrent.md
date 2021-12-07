@@ -7,7 +7,6 @@
 
 ## Steps
 - Script for setting up namespace and run qbittorent-nox into it. Change user in last line to desired on.
-
 	```bash
 	#!/bin/bash
 	ip netns del torrent
